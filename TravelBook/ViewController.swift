@@ -16,6 +16,7 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var nameText: UITextField!
     @IBOutlet weak var commentText: UITextField!
+    @IBOutlet weak var saveButton: UIButton!
     
     var locationManager = CLLocationManager()
     
@@ -47,8 +48,13 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         gestureRecognizer.minimumPressDuration = 3
         mapView.addGestureRecognizer(gestureRecognizer)
         
+        // Klavyeyi kapatmak için
+        let gestureRecognizerKey = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        view.addGestureRecognizer(gestureRecognizerKey)
         
         if selectedTitle != "" {
+            
+            saveButton.isHidden = true
             
             // Core Data
             
@@ -108,6 +114,8 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         } else {
             
             // New Data
+            saveButton.isHidden = false
+            saveButton.isEnabled = false
             
         }
         
@@ -127,8 +135,13 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
             annotation.title = nameText.text
             annotation.subtitle = commentText.text
             self.mapView.addAnnotation(annotation)
+            saveButton.isEnabled = true
         }
         
+    }
+    
+    @objc func hideKeyboard() {
+        view.endEditing(true)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
